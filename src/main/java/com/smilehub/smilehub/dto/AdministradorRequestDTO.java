@@ -1,10 +1,11 @@
 package com.smilehub.smilehub.dto;
 
-public record UsuarioRequestDTO(
+import com.smilehub.smilehub.entities.Ativo;
+
+public record AdministradorRequestDTO(
         String nome,
         String email,
-        String cpf,
         String senha,
-        Long perfilId
+        Ativo ativo
 ) {
 }

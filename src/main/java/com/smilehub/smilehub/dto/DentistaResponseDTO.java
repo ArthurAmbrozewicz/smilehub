@@ -7,11 +7,12 @@ import java.time.LocalDateTime;
 public record DentistaResponseDTO(
         Long id,
         String nome,
-        String cpf,
         String email,
+        String dtype,
+        String cpf,
         String cro,
         LocalDateTime dataCriacao,
-        UsuarioResumoDTO usuario,
+        LocalDateTime ultimoLogin,
         Ativo ativo
 ) {
 
@@ -19,11 +20,12 @@ public record DentistaResponseDTO(
         return new DentistaResponseDTO(
                 dentista.getId(),
                 dentista.getNome(),
-                dentista.getCpf(),
                 dentista.getEmail(),
+                "DENTISTA",
+                dentista.getCpf(),
                 dentista.getCro(),
                 dentista.getDataCriacao(),
-                UsuarioResumoDTO.from(dentista.getUsuario()),
+                dentista.getUltimoLogin(),
                 dentista.getAtivo()
         );
     }

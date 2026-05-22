@@ -4,10 +4,10 @@ import com.smilehub.smilehub.entities.Ativo;
 
 public record DentistaRequestDTO(
         String nome,
-        String cpf,
         String email,
+        String senha,
+        String cpf,
         String cro,
-        Long usuarioId,
         Ativo ativo
 ) {
 }

@@ -1,16 +1,18 @@
 package com.smilehub.smilehub.dto;
 
+import com.smilehub.smilehub.entities.Ativo;
 import com.smilehub.smilehub.entities.Usuario;
+import com.smilehub.smilehub.util.UsuarioDtypeUtil;
 import java.time.LocalDateTime;
 
 public record UsuarioResponseDTO(
         Long id,
         String nome,
         String email,
-        String cpf,
-        PerfilResponseDTO perfil,
+        String dtype,
         LocalDateTime dataCriacao,
-        LocalDateTime ultimoLogin
+        LocalDateTime ultimoLogin,
+        Ativo ativo
 ) {
 
     public static UsuarioResponseDTO from(Usuario usuario) {
@@ -18,10 +20,11 @@ public record UsuarioResponseDTO(
                 usuario.getId(),
                 usuario.getNome(),
                 usuario.getEmail(),
-                usuario.getCpf(),
-                PerfilResponseDTO.from(usuario.getPerfil()),
+                UsuarioDtypeUtil.resolverDtype(usuario),
                 usuario.getDataCriacao(),
-                usuario.getUltimoLogin()
+                usuario.getUltimoLogin(),
+                usuario.getAtivo()
         );
     }
+
 }

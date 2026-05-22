@@ -1,19 +1,24 @@
 package com.smilehub.smilehub.entities;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "usuario")
-public class Usuario {
+@Table(name = "usuarios")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "dtype")
+public abstract class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,35 +30,35 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, unique = true)
-    private String cpf;
-
     @Column(nullable = false)
     private String senha;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "perfil_id", nullable = false)
-    private Perfil perfil;
-
-    @Column(updatable = false)
+    @Column(name = "data_criacao", updatable = false)
     private LocalDateTime dataCriacao;
 
+    @Column(name = "ultimo_login")
     private LocalDateTime ultimoLogin;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "ENUM('S', 'N')")
+    private Ativo ativo;
 
     protected Usuario() {
     }
 
-    public Usuario(String nome, String email, String cpf, String senha, Perfil perfil) {
+    protected Usuario(String nome, String email, String senha, Ativo ativo) {
         this.nome = nome;
         this.email = email;
-        this.cpf = cpf;
         this.senha = senha;
-        this.perfil = perfil;
+        this.ativo = ativo;
     }
 
     @PrePersist
     void prePersist() {
         this.dataCriacao = LocalDateTime.now();
+        if (this.ativo == null) {
+            this.ativo = Ativo.S;
+        }
     }
 
     public Long getId() {
@@ -76,28 +81,12 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
     public String getSenha() {
         return senha;
     }
 
     public void setSenha(String senha) {
         this.senha = senha;
-    }
-
-    public Perfil getPerfil() {
-        return perfil;
-    }
-
-    public void setPerfil(Perfil perfil) {
-        this.perfil = perfil;
     }
 
     public LocalDateTime getDataCriacao() {
@@ -110,5 +99,13 @@ public class Usuario {
 
     public void setUltimoLogin(LocalDateTime ultimoLogin) {
         this.ultimoLogin = ultimoLogin;
+    }
+
+    public Ativo getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Ativo ativo) {
+        this.ativo = ativo;
     }
 }
