@@ -1,7 +1,6 @@
 package com.smilehub.smilehub.dto;
 
 import com.smilehub.smilehub.entities.Administrador;
-import com.smilehub.smilehub.entities.Ativo;
 import java.time.LocalDateTime;
 
 public record AdministradorResponseDTO(
@@ -11,7 +10,7 @@ public record AdministradorResponseDTO(
         String dtype,
         LocalDateTime dataCriacao,
         LocalDateTime ultimoLogin,
-        Ativo ativo
+        boolean ativo
 ) {
 
     public static AdministradorResponseDTO from(Administrador administrador) {
@@ -22,7 +21,7 @@ public record AdministradorResponseDTO(
                 "ADMINISTRADOR",
                 administrador.getDataCriacao(),
                 administrador.getUltimoLogin(),
-                administrador.getAtivo()
+                administrador.isAtivo()
         );
     }
 }

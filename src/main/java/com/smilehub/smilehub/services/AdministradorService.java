@@ -1,9 +1,9 @@
 package com.smilehub.smilehub.services;
 
+import com.smilehub.smilehub.dto.AdministradorEditarDTO;
 import com.smilehub.smilehub.dto.AdministradorRequestDTO;
 import com.smilehub.smilehub.dto.AdministradorResponseDTO;
 import com.smilehub.smilehub.entities.Administrador;
-import com.smilehub.smilehub.entities.Ativo;
 import com.smilehub.smilehub.exception.BusinessException;
 import com.smilehub.smilehub.exception.ResourceNotFoundException;
 import com.smilehub.smilehub.repositories.AdministradorRepository;
@@ -38,7 +38,7 @@ public class AdministradorService {
             throw new BusinessException("E-mail já cadastrado");
         }
 
-        Ativo ativo = request.ativo() != null ? request.ativo() : Ativo.S;
+        boolean ativo = request.ativo() != null ? request.ativo() : true;
         String senhaCriptografada = passwordEncoder.encode(request.senha());
 
         Administrador administrador = new Administrador(
@@ -47,6 +47,30 @@ public class AdministradorService {
                 senhaCriptografada,
                 ativo
         );
+
+        return AdministradorResponseDTO.from(administradorRepository.save(administrador));
+    }
+
+    @Transactional
+    public AdministradorResponseDTO editar(Long id, AdministradorEditarDTO request) {
+        validarEditarRequest(request);
+
+        Administrador administrador = buscarEntidadePorId(id);
+
+        if (usuarioRepository.existsByEmailAndIdNot(request.email(), id)) {
+            throw new BusinessException("E-mail já cadastrado");
+        }
+
+        administrador.setNome(request.nome());
+        administrador.setEmail(request.email());
+
+        if (request.senha() != null && !request.senha().isBlank()) {
+            administrador.setSenha(passwordEncoder.encode(request.senha()));
+        }
+
+        if (request.ativo() != null) {
+            administrador.setAtivo(request.ativo());
+        }
 
         return AdministradorResponseDTO.from(administradorRepository.save(administrador));
     }
@@ -79,8 +103,14 @@ public class AdministradorService {
         if (request.senha() == null || request.senha().isBlank()) {
             throw new BusinessException("Senha é obrigatória");
         }
-        if (request.ativo() != null && request.ativo() != Ativo.S && request.ativo() != Ativo.N) {
-            throw new BusinessException("Ativo deve ser S ou N");
+    }
+
+    private void validarEditarRequest(AdministradorEditarDTO request) {
+        if (request.nome() == null || request.nome().isBlank()) {
+            throw new BusinessException("Nome é obrigatório");
+        }
+        if (request.email() == null || request.email().isBlank()) {
+            throw new BusinessException("E-mail é obrigatório");
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.smilehub.smilehub.dto;
 
-public record AdministradorRequestDTO(
+public record AdministradorEditarDTO(
         String nome,
         String email,
         String senha,

@@ -1,5 +1,6 @@
 package com.smilehub.smilehub.controllers;
 
+import com.smilehub.smilehub.dto.AdministradorEditarDTO;
 import com.smilehub.smilehub.dto.AdministradorRequestDTO;
 import com.smilehub.smilehub.dto.AdministradorResponseDTO;
 import com.smilehub.smilehub.services.AdministradorService;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +29,14 @@ public class AdministradorController {
     public ResponseEntity<AdministradorResponseDTO> criar(@RequestBody AdministradorRequestDTO request) {
         AdministradorResponseDTO administrador = administradorService.criar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(administrador);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AdministradorResponseDTO> editar(
+            @PathVariable Long id,
+            @RequestBody AdministradorEditarDTO request
+    ) {
+        return ResponseEntity.ok(administradorService.editar(id, request));
     }
 
     @GetMapping
