@@ -19,7 +19,7 @@ public class Dentista extends Usuario {
     protected Dentista() {
     }
 
-    public Dentista(String nome, String email, String senha, Ativo ativo, String cpf, String cro) {
+    public Dentista(String nome, String email, String senha, boolean ativo, String cpf, String cro) {
         super(nome, email, senha, ativo);
         this.cpf = cpf;
         this.cro = cro;

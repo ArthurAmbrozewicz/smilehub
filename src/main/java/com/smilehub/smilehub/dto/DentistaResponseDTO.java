@@ -1,8 +1,8 @@
 package com.smilehub.smilehub.dto;
 
-import com.smilehub.smilehub.entities.Ativo;
 import com.smilehub.smilehub.entities.Dentista;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record DentistaResponseDTO(
         Long id,
@@ -13,10 +13,15 @@ public record DentistaResponseDTO(
         String cro,
         LocalDateTime dataCriacao,
         LocalDateTime ultimoLogin,
-        Ativo ativo
+        boolean ativo,
+        List<EspecialidadeResumoDTO> especialidades
 ) {
 
     public static DentistaResponseDTO from(Dentista dentista) {
+        return from(dentista, List.of());
+    }
+
+    public static DentistaResponseDTO from(Dentista dentista, List<EspecialidadeResumoDTO> especialidades) {
         return new DentistaResponseDTO(
                 dentista.getId(),
                 dentista.getNome(),
@@ -26,7 +31,8 @@ public record DentistaResponseDTO(
                 dentista.getCro(),
                 dentista.getDataCriacao(),
                 dentista.getUltimoLogin(),
-                dentista.getAtivo()
+                dentista.isAtivo(),
+                especialidades
         );
     }
 }

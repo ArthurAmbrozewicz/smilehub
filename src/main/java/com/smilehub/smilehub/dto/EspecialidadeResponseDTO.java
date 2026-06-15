@@ -7,7 +7,8 @@ public record EspecialidadeResponseDTO(
         Long id,
         String nome,
         UsuarioResumoDTO usuario,
-        LocalDateTime dataCriacao
+        LocalDateTime dataCriacao,
+        boolean ativo
 ) {
 
     public static EspecialidadeResponseDTO from(Especialidade especialidade) {
@@ -15,7 +16,8 @@ public record EspecialidadeResponseDTO(
                 especialidade.getId(),
                 especialidade.getNome(),
                 UsuarioResumoDTO.from(especialidade.getUsuario()),
-                especialidade.getDataCriacao()
+                especialidade.getDataCriacao(),
+                especialidade.isAtivo()
         );
     }
 }

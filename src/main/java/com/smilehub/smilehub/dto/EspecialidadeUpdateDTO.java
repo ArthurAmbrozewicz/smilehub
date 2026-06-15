@@ -1,6 +1,6 @@
 package com.smilehub.smilehub.dto;
 
-public record EspecialidadeRequestDTO(
+public record EspecialidadeUpdateDTO(
         String nome,
         Boolean ativo
 ) {

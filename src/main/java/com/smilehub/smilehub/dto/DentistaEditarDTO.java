@@ -1,9 +1,8 @@
 package com.smilehub.smilehub.dto;
 
-public record DentistaRequestDTO(
+public record DentistaEditarDTO(
         String nome,
         String email,
-        String senha,
         String cpf,
         String cro,
         Boolean ativo

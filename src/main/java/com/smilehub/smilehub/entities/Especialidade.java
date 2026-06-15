@@ -29,6 +29,9 @@ public class Especialidade {
     @Column(name = "data_criacao", updatable = false)
     private LocalDateTime dataCriacao;
 
+    @Column(nullable = false)
+    private boolean ativo = true;
+
     protected Especialidade() {
     }
 
@@ -64,5 +67,13 @@ public class Especialidade {
 
     public LocalDateTime getDataCriacao() {
         return dataCriacao;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
 }
