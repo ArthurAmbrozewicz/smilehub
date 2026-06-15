@@ -3,8 +3,6 @@ package com.smilehub.smilehub.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,14 +37,13 @@ public abstract class Usuario {
     @Column(name = "ultimo_login")
     private LocalDateTime ultimoLogin;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "ENUM('S', 'N')")
-    private Ativo ativo;
+    @Column(nullable = false)
+    private boolean ativo = true;
 
     protected Usuario() {
     }
 
-    protected Usuario(String nome, String email, String senha, Ativo ativo) {
+    protected Usuario(String nome, String email, String senha, boolean ativo) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
@@ -56,9 +53,6 @@ public abstract class Usuario {
     @PrePersist
     void prePersist() {
         this.dataCriacao = LocalDateTime.now();
-        if (this.ativo == null) {
-            this.ativo = Ativo.S;
-        }
     }
 
     public Long getId() {
@@ -101,11 +95,11 @@ public abstract class Usuario {
         this.ultimoLogin = ultimoLogin;
     }
 
-    public Ativo getAtivo() {
+    public boolean isAtivo() {
         return ativo;
     }
 
-    public void setAtivo(Ativo ativo) {
+    public void setAtivo(boolean ativo) {
         this.ativo = ativo;
     }
 }

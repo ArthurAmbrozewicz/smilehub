@@ -1,6 +1,5 @@
 package com.smilehub.smilehub.dto;
 
-import com.smilehub.smilehub.entities.Ativo;
 import com.smilehub.smilehub.entities.Paciente;
 import java.time.LocalDateTime;
 
@@ -13,7 +12,7 @@ public record PacienteResponseDTO(
         String telefone,
         LocalDateTime dataCriacao,
         LocalDateTime ultimoLogin,
-        Ativo ativo
+        boolean ativo
 ) {
 
     public static PacienteResponseDTO from(Paciente paciente) {
@@ -26,7 +25,7 @@ public record PacienteResponseDTO(
                 paciente.getTelefone(),
                 paciente.getDataCriacao(),
                 paciente.getUltimoLogin(),
-                paciente.getAtivo()
+                paciente.isAtivo()
         );
     }
 }

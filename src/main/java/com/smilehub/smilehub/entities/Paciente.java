@@ -19,7 +19,7 @@ public class Paciente extends Usuario {
     protected Paciente() {
     }
 
-    public Paciente(String nome, String email, String senha, Ativo ativo, String cpf, String telefone) {
+    public Paciente(String nome, String email, String senha, boolean ativo, String cpf, String telefone) {
         super(nome, email, senha, ativo);
         this.cpf = cpf;
         this.telefone = telefone;

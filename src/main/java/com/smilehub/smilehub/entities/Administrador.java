@@ -12,7 +12,7 @@ public class Administrador extends Usuario {
     protected Administrador() {
     }
 
-    public Administrador(String nome, String email, String senha, Ativo ativo) {
+    public Administrador(String nome, String email, String senha, boolean ativo) {
         super(nome, email, senha, ativo);
     }
 }

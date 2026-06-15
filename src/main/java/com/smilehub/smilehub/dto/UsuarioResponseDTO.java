@@ -1,6 +1,5 @@
 package com.smilehub.smilehub.dto;
 
-import com.smilehub.smilehub.entities.Ativo;
 import com.smilehub.smilehub.entities.Usuario;
 import com.smilehub.smilehub.util.UsuarioDtypeUtil;
 import java.time.LocalDateTime;
@@ -12,7 +11,7 @@ public record UsuarioResponseDTO(
         String dtype,
         LocalDateTime dataCriacao,
         LocalDateTime ultimoLogin,
-        Ativo ativo
+        boolean ativo
 ) {
 
     public static UsuarioResponseDTO from(Usuario usuario) {
@@ -23,7 +22,7 @@ public record UsuarioResponseDTO(
                 UsuarioDtypeUtil.resolverDtype(usuario),
                 usuario.getDataCriacao(),
                 usuario.getUltimoLogin(),
-                usuario.getAtivo()
+                usuario.isAtivo()
         );
     }
 
