@@ -1,7 +1,9 @@
 package com.smilehub.smilehub.dto;
 
 import com.smilehub.smilehub.entities.Consulta;
+import com.smilehub.smilehub.entities.ConsultaServico;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record ConsultaResponseDTO(
         Long id,
@@ -13,10 +15,11 @@ public record ConsultaResponseDTO(
         LocalDateTime dataInicio,
         LocalDateTime dataFim,
         LocalDateTime dataRegistro,
-        String status
+        String status,
+        List<ConsultaServicoResponseDTO> servicos
 ) {
 
-    public static ConsultaResponseDTO from(Consulta consulta) {
+    public static ConsultaResponseDTO from(Consulta consulta, List<ConsultaServico> servicos) {
         return new ConsultaResponseDTO(
                 consulta.getId(),
                 PacienteResumoDTO.from(consulta.getPaciente()),
@@ -29,7 +32,8 @@ public record ConsultaResponseDTO(
                 consulta.getDataInicio(),
                 consulta.getDataFim(),
                 consulta.getDataRegistro(),
-                consulta.getStatus()
+                consulta.getStatus(),
+                servicos.stream().map(ConsultaServicoResponseDTO::from).toList()
         );
     }
 }
