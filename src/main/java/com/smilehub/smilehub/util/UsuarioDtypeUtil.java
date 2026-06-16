@@ -4,6 +4,7 @@ import com.smilehub.smilehub.entities.Administrador;
 import com.smilehub.smilehub.entities.Dentista;
 import com.smilehub.smilehub.entities.Paciente;
 import com.smilehub.smilehub.entities.Usuario;
+import org.hibernate.Hibernate;
 
 public final class UsuarioDtypeUtil {
 
@@ -20,6 +21,13 @@ public final class UsuarioDtypeUtil {
         if (usuario instanceof Dentista) {
             return "DENTISTA";
         }
-        return "USUARIO";
+
+        String className = Hibernate.getClass(usuario).getSimpleName();
+        return switch (className) {
+            case "Administrador" -> "ADMINISTRADOR";
+            case "Dentista" -> "DENTISTA";
+            case "Paciente" -> "PACIENTE";
+            default -> "USUARIO";
+        };
     }
 }
