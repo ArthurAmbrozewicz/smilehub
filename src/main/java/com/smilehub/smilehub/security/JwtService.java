@@ -23,7 +23,7 @@ public class JwtService {
         this.expirationMs = expirationMs;
     }
 
-    public String gerarToken(Long id, String email, String dtype) {
+    public String gerarToken(Long id, String email, String nome, String dtype) {
         Date agora = new Date();
         Date expiracao = new Date(agora.getTime() + expirationMs);
 
@@ -31,6 +31,7 @@ public class JwtService {
                 .subject(email)
                 .claim("id", id)
                 .claim("email", email)
+                .claim("nome", nome)
                 .claim("dtype", dtype)
                 .issuedAt(agora)
                 .expiration(expiracao)

@@ -12,6 +12,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermissions;
 
 @Service
 public class UsuarioService {
@@ -87,6 +95,58 @@ public class UsuarioService {
     public Usuario buscarEntidadePorId(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado: " + id));
+    }
+
+    public void salvarFotoPerfil(Long id, MultipartFile file) {
+        Usuario usuario = buscarEntidadePorId(id);
+        Usuario usuarioLogado = buscarUsuarioAutenticado();
+        String dtypeLogado = UsuarioDtypeUtil.resolverDtype(usuarioLogado);
+
+        if (!DTYPE_ADMINISTRADOR.equals(dtypeLogado) && !usuarioLogado.getId().equals(id)) {
+            throw new BusinessException("Acesso negado");
+        }
+
+        try {
+            Path diretorioUsuario = Paths.get("usuario", String.valueOf(id)).toAbsolutePath().normalize();
+            if (!Files.exists(diretorioUsuario)) {
+                Files.createDirectories(diretorioUsuario);
+            } else {
+                Files.list(diretorioUsuario).forEach(p -> {
+                    try {
+                        Files.delete(p);
+                    } catch (IOException ignored) {}
+                });
+            }
+
+            Path arquivoDestino = diretorioUsuario.resolve("foto");
+            file.transferTo(arquivoDestino);
+
+            try {
+                Files.setPosixFilePermissions(arquivoDestino, PosixFilePermissions.fromString("rw-r--r--"));
+            } catch (UnsupportedOperationException e) {
+                // Ignore if not on a POSIX file system
+            }
+
+        } catch (IOException e) {
+            throw new BusinessException("Erro ao salvar a foto de perfil: " + e.getMessage());
+        }
+    }
+
+    public Resource carregarFotoPerfil(Long id) {
+        try {
+            Path diretorioUsuario = Paths.get("usuario", String.valueOf(id)).toAbsolutePath().normalize();
+            Path arquivo = diretorioUsuario.resolve("foto");
+            
+            if (Files.exists(arquivo)) {
+                Resource resource = new UrlResource(arquivo.toUri());
+                if (resource.exists() || resource.isReadable()) {
+                    return resource;
+                }
+            }
+            throw new ResourceNotFoundException("Foto de perfil não encontrada");
+        } catch (IOException e) {
+            throw new BusinessException("Erro ao carregar a foto de perfil: " + e.getMessage());
+        }
     }
 
     private Usuario buscarUsuarioAutenticado() {

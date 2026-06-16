@@ -52,9 +52,20 @@ public class AuthService {
         usuario.setUltimoLogin(LocalDateTime.now());
         usuarioRepository.save(usuario);
 
-        String token = jwtService.gerarToken(usuario.getId(), usuario.getEmail(), dtype);
+        String token = jwtService.gerarToken(
+                usuario.getId(),
+                usuario.getEmail(),
+                usuario.getNome(),
+                dtype
+        );
 
-        return new LoginResponseDTO(token, usuario.getId(), usuario.getEmail(), dtype);
+        return new LoginResponseDTO(
+                token,
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail(),
+                dtype
+        );
     }
 
     private void validarRequest(LoginRequestDTO request) {

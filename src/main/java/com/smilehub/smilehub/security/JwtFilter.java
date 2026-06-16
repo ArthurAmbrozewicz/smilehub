@@ -28,11 +28,9 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        String authorization = request.getHeader("Authorization");
+        String token = extrairToken(request);
 
-        if (authorization != null && authorization.startsWith(BEARER_PREFIX)) {
-            String token = authorization.substring(BEARER_PREFIX.length());
-
+        if (token != null) {
             try {
                 String email = jwtService.extrairClaims(token).getSubject();
 
@@ -46,5 +44,20 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private String extrairToken(HttpServletRequest request) {
+        String authorization = request.getHeader("Authorization");
+
+        if (authorization != null && authorization.startsWith(BEARER_PREFIX)) {
+            return authorization.substring(BEARER_PREFIX.length());
+        }
+
+        String tokenParam = request.getParameter("token");
+        if (tokenParam != null && !tokenParam.isBlank()) {
+            return tokenParam;
+        }
+
+        return null;
     }
 }

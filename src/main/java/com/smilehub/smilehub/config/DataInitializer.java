@@ -31,6 +31,8 @@ public class DataInitializer implements ApplicationRunner {
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
+        // Admin e demais dados de exemplo são carregados via data.sql.
+        // Mantém fallback caso o script SQL não tenha sido executado.
         if (usuarioRepository.existsByEmail(ADMIN_EMAIL)) {
             return;
         }

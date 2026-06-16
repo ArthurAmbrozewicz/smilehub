@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/auth/login")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/usuarios/*/foto")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
