@@ -7,10 +7,28 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-    ports:
-      - "8080:8080"
+    networks:
+      - network_public
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.smilehub-backend.rule=Host(`av3.com.br`) && PathPrefix(`/smilehub/api`)"
+        - "traefik.http.routers.smilehub-backend.entrypoints=websecure"
+        - "traefik.http.routers.smilehub-backend.tls.certresolver=letsencrypt"
+        - "traefik.http.services.smilehub-backend.loadbalancer.server.port=8080"
 
   frontend:
     image: arthurcidqal/smilehub-frontend:latest
-    ports:
-      - "3000:80"
+    networks:
+      - network_public
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.smilehub-frontend.rule=Host(`av3.com.br`) && PathPrefix(`/smilehub`)"
+        - "traefik.http.routers.smilehub-frontend.entrypoints=websecure"
+        - "traefik.http.routers.smilehub-frontend.tls.certresolver=letsencrypt"
+        - "traefik.http.services.smilehub-frontend.loadbalancer.server.port=80"
+
+networks:
+  network_public:
+    external: true
