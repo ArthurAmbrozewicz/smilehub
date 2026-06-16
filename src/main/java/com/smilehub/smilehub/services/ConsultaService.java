@@ -44,6 +44,7 @@ public class ConsultaService {
     private final ServicoService servicoService;
     private final UsuarioRepository usuarioRepository;
     private final MotivoCancelamentoService motivoCancelamentoService;
+    private final NotificacaoService notificacaoService;
 
     public ConsultaService(
             ConsultaRepository consultaRepository,
@@ -52,7 +53,8 @@ public class ConsultaService {
             DentistaService dentistaService,
             ServicoService servicoService,
             UsuarioRepository usuarioRepository,
-            MotivoCancelamentoService motivoCancelamentoService
+            MotivoCancelamentoService motivoCancelamentoService,
+            NotificacaoService notificacaoService
     ) {
         this.consultaRepository = consultaRepository;
         this.consultaServicoRepository = consultaServicoRepository;
@@ -61,6 +63,7 @@ public class ConsultaService {
         this.servicoService = servicoService;
         this.usuarioRepository = usuarioRepository;
         this.motivoCancelamentoService = motivoCancelamentoService;
+        this.notificacaoService = notificacaoService;
     }
 
     @Transactional
@@ -97,6 +100,7 @@ public class ConsultaService {
 
         Consulta consultaSalva = consultaRepository.save(consulta);
         salvarServicos(consultaSalva, request.servicos());
+        notificacaoService.notificarConsultaCriada(consultaSalva);
 
         return montarResponse(consultaSalva);
     }
@@ -148,6 +152,11 @@ public class ConsultaService {
     @Transactional
     public ConsultaResponseDTO finalizar(Long id) {
         Consulta consulta = buscarEntidadePorId(id);
+        validarAcessoFinalizar(consulta);
+
+        if (STATUS_FINALIZADA.equals(consulta.getStatus())) {
+            return montarResponse(consulta);
+        }
 
         if (!STATUS_AGENDADA.equals(consulta.getStatus())) {
             throw new BusinessException("Apenas consultas agendadas podem ser finalizadas");
@@ -260,6 +269,21 @@ public class ConsultaService {
         if (valor.compareTo(BigDecimal.ZERO) <= 0) {
             throw new BusinessException("Valor do serviço deve ser maior que zero");
         }
+    }
+
+    private void validarAcessoFinalizar(Consulta consulta) {
+        Usuario usuarioLogado = buscarUsuarioAutenticado();
+        String dtype = UsuarioDtypeUtil.resolverDtype(usuarioLogado);
+
+        if (DTYPE_ADMINISTRADOR.equals(dtype)) {
+            return;
+        }
+
+        if (DTYPE_DENTISTA.equals(dtype) && usuarioLogado.getId().equals(consulta.getDentista().getId())) {
+            return;
+        }
+
+        throw new BusinessException("Acesso negado");
     }
 
     private void validarAcessoListarPorPaciente(Long pacienteId) {

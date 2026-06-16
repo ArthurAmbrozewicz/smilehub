@@ -87,6 +87,9 @@ public class DentistaService {
         dentista.setEmail(request.email());
         dentista.setCpf(request.cpf());
         dentista.setCro(request.cro());
+        if (request.senha() != null && !request.senha().isBlank()) {
+            dentista.setSenha(passwordEncoder.encode(request.senha()));
+        }
         if (request.ativo() != null) {
             dentista.setAtivo(request.ativo());
         }

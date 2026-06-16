@@ -111,9 +111,13 @@ public class PacienteService {
     }
 
     private void validarAcessoCriar() {
-        if (!DTYPE_ADMINISTRADOR.equals(resolverDtypeUsuarioLogado())) {
-            throw new BusinessException("Acesso negado");
+        String dtype = resolverDtypeUsuarioLogado();
+
+        if (DTYPE_ADMINISTRADOR.equals(dtype) || DTYPE_DENTISTA.equals(dtype)) {
+            return;
         }
+
+        throw new BusinessException("Acesso negado");
     }
 
     private void validarAcessoEditar(Long id) {
