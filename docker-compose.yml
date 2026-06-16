@@ -1,28 +1,16 @@
 services:
 
-  # ── Backend Spring Boot ───────────────────────────────────────────
   backend:
-    build:
-      context: ./backend        # pasta do seu repositório backend
-    container_name: smilehub-backend
-    restart: always
+    image: arthurcidqal/smilehub-backend:latest
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/smilehub
+      SPRING_DATASOURCE_URL: jdbc:postgresql://10.0.0.4:5432/smilehub
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-    extra_hosts:
-      - "host.docker.internal:host-gateway"   # permite acessar o PostgreSQL do host
-    expose:
-      - "8080"                                 # visível apenas internamente
-
-  # ── Frontend Angular ──────────────────────────────────────────────
-  frontend:
-    build:
-      context: ./frontend       # pasta do seu repositório frontend
-    container_name: smilehub-frontend
-    restart: always
     ports:
-      - "3000:80"               # acessa via porta 3000 externamente
-    depends_on:
-      - backend
+      - "8080:8080"
+
+  frontend:
+    image: arthurcidqal/smilehub-frontend:latest
+    ports:
+      - "3000:80"
