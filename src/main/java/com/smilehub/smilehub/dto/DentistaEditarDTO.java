@@ -5,6 +5,7 @@ public record DentistaEditarDTO(
         String email,
         String cpf,
         String cro,
+        String senha,
         Boolean ativo
 ) {
 }
