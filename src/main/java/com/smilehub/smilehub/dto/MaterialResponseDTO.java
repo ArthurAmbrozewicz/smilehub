@@ -1,6 +1,7 @@
 package com.smilehub.smilehub.dto;
 
 import com.smilehub.smilehub.entities.Material;
+import com.smilehub.smilehub.services.EstoqueService;
 
 public record MaterialResponseDTO(
         Long id,
@@ -18,18 +19,9 @@ public record MaterialResponseDTO(
                 material.getNome(),
                 material.getQuantidade(),
                 material.getQuantidadeInicial(),
-                calcularEstoqueBaixo(material),
+                EstoqueService.estaComEstoqueBaixo(material),
                 material.isAtivo(),
                 UsuarioResumoDTO.from(material.getUsuario())
         );
-    }
-
-    private static boolean calcularEstoqueBaixo(Material material) {
-        if (material.getQuantidadeInicial() <= 0) {
-            return false;
-        }
-
-        double limite = material.getQuantidadeInicial() * 0.10;
-        return material.getQuantidade() <= limite;
     }
 }

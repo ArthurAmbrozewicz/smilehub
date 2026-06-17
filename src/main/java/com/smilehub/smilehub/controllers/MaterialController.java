@@ -58,9 +58,4 @@ public class MaterialController {
     public ResponseEntity<List<MaterialResponseDTO>> listar() {
         return ResponseEntity.ok(materialService.listar());
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<MaterialResponseDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(materialService.buscarPorId(id));
-    }
 }

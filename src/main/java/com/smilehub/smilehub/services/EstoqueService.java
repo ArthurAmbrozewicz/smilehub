@@ -47,7 +47,7 @@ public class EstoqueService {
         aplicarMovimentacao(consumo, 1);
     }
 
-    static boolean estaComEstoqueBaixo(Material material) {
+    public static boolean estaComEstoqueBaixo(Material material) {
         if (material.getQuantidadeInicial() <= 0) {
             return false;
         }

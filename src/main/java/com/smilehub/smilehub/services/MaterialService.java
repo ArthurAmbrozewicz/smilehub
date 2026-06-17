@@ -122,14 +122,7 @@ public class MaterialService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    public MaterialResponseDTO buscarPorId(Long id) {
-        validarAcessoAdmin();
-        return MaterialResponseDTO.from(buscarEntidadePorId(id));
-    }
-
-    @Transactional(readOnly = true)
-    public Material buscarEntidadePorId(Long id) {
+    private Material buscarEntidadePorId(Long id) {
         return materialRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Material não encontrado: " + id));
     }
