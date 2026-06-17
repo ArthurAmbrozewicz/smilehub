@@ -1,5 +1,6 @@
 package com.smilehub.smilehub.services;
 
+import com.smilehub.smilehub.dto.MaterialReporDTO;
 import com.smilehub.smilehub.dto.MaterialRequestDTO;
 import com.smilehub.smilehub.dto.MaterialResponseDTO;
 import com.smilehub.smilehub.dto.MaterialUpdateDTO;
@@ -78,6 +79,29 @@ public class MaterialService {
     }
 
     @Transactional
+    public MaterialResponseDTO reporEstoque(Long id, MaterialReporDTO request) {
+        validarAcessoAdmin();
+        validarQuantidadeRepor(request.quantidade());
+
+        Material material = buscarEntidadePorId(id);
+
+        if (!material.isAtivo()) {
+            throw new BusinessException("Material inativo");
+        }
+
+        int novaQuantidade = material.getQuantidade() + request.quantidade();
+
+        if (novaQuantidade > material.getQuantidadeInicial()) {
+            material.setQuantidadeInicial(novaQuantidade);
+        }
+
+        material.setQuantidade(novaQuantidade);
+        atualizarFlagEstoqueBaixo(material);
+
+        return MaterialResponseDTO.from(materialRepository.save(material));
+    }
+
+    @Transactional
     public void desativar(Long id) {
         validarAcessoAdmin();
         Material material = buscarEntidadePorId(id);
@@ -141,6 +165,16 @@ public class MaterialService {
     private void validarNome(String nome) {
         if (nome == null || nome.isBlank()) {
             throw new BusinessException("Nome é obrigatório");
+        }
+    }
+
+    private void validarQuantidadeRepor(Integer quantidade) {
+        if (quantidade == null) {
+            throw new BusinessException("Quantidade é obrigatória");
+        }
+
+        if (quantidade <= 0) {
+            throw new BusinessException("Quantidade deve ser maior que zero");
         }
     }
 

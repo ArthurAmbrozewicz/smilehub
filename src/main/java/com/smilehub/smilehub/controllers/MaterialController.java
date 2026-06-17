@@ -1,5 +1,6 @@
 package com.smilehub.smilehub.controllers;
 
+import com.smilehub.smilehub.dto.MaterialReporDTO;
 import com.smilehub.smilehub.dto.MaterialRequestDTO;
 import com.smilehub.smilehub.dto.MaterialResponseDTO;
 import com.smilehub.smilehub.dto.MaterialUpdateDTO;
@@ -37,6 +38,14 @@ public class MaterialController {
             @RequestBody MaterialUpdateDTO request
     ) {
         return ResponseEntity.ok(materialService.editar(id, request));
+    }
+
+    @PatchMapping("/{id}/repor")
+    public ResponseEntity<MaterialResponseDTO> reporEstoque(
+            @PathVariable Long id,
+            @RequestBody MaterialReporDTO request
+    ) {
+        return ResponseEntity.ok(materialService.reporEstoque(id, request));
     }
 
     @PatchMapping("/{id}/desativar")
