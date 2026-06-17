@@ -45,6 +45,34 @@ public class NotificacaoService {
     }
 
     @Transactional
+    public void notificarEstoqueBaixo(com.smilehub.smilehub.entities.Material material) {
+        String descricao = String.format(
+                "Estoque baixo: o material \"%s\" atingiu %d unidade(s) (10%% ou menos da capacidade original de %d).",
+                material.getNome(),
+                material.getQuantidade(),
+                material.getQuantidadeInicial()
+        );
+
+        for (Administrador administrador : administradorRepository.findAll()) {
+            if (!administrador.isAtivo()) {
+                continue;
+            }
+
+            Long destinatarioId = administrador.getId();
+            Usuario destinatario = usuarioRepository.findById(destinatarioId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado: " + destinatarioId));
+
+            Notificacao salva = notificacaoRepository.save(new Notificacao(descricao, destinatario));
+            long naoLidas = notificacaoRepository.countByUsuarioIdAndLidaFalse(destinatarioId);
+
+            notificacaoSseService.publicar(
+                    destinatarioId,
+                    new NotificacaoEventoDTO(naoLidas, NotificacaoResponseDTO.from(salva))
+            );
+        }
+    }
+
+    @Transactional
     public void notificarConsultaCriada(Consulta consulta) {
         String descricao = montarDescricaoConsultaCriada(consulta);
         Set<Long> destinatarios = resolverDestinatariosConsultaCriada(consulta);

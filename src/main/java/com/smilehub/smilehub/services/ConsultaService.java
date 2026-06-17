@@ -45,6 +45,7 @@ public class ConsultaService {
     private final UsuarioRepository usuarioRepository;
     private final MotivoCancelamentoService motivoCancelamentoService;
     private final NotificacaoService notificacaoService;
+    private final EstoqueService estoqueService;
 
     public ConsultaService(
             ConsultaRepository consultaRepository,
@@ -54,7 +55,8 @@ public class ConsultaService {
             ServicoService servicoService,
             UsuarioRepository usuarioRepository,
             MotivoCancelamentoService motivoCancelamentoService,
-            NotificacaoService notificacaoService
+            NotificacaoService notificacaoService,
+            EstoqueService estoqueService
     ) {
         this.consultaRepository = consultaRepository;
         this.consultaServicoRepository = consultaServicoRepository;
@@ -64,6 +66,7 @@ public class ConsultaService {
         this.usuarioRepository = usuarioRepository;
         this.motivoCancelamentoService = motivoCancelamentoService;
         this.notificacaoService = notificacaoService;
+        this.estoqueService = estoqueService;
     }
 
     @Transactional
@@ -100,6 +103,7 @@ public class ConsultaService {
 
         Consulta consultaSalva = consultaRepository.save(consulta);
         salvarServicos(consultaSalva, request.servicos());
+        estoqueService.debitarConsulta(consultaSalva);
         notificacaoService.notificarConsultaCriada(consultaSalva);
 
         return montarResponse(consultaSalva);
@@ -121,7 +125,9 @@ public class ConsultaService {
         consulta.setDataFim(request.dataFim());
 
         Consulta consultaSalva = consultaRepository.save(consulta);
+        estoqueService.creditarConsulta(consultaSalva);
         sincronizarServicos(consultaSalva, request.servicos());
+        estoqueService.debitarConsulta(consultaSalva);
 
         return montarResponse(consultaSalva);
     }
@@ -142,6 +148,8 @@ public class ConsultaService {
         }
 
         MotivoCancelamento motivo = motivoCancelamentoService.buscarEntidadePorId(request.motivoCancelamentoId());
+
+        estoqueService.creditarConsulta(consulta);
 
         consulta.setStatus(STATUS_CANCELADA);
         consulta.setMotivoCancelamento(motivo);

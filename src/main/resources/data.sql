@@ -93,6 +93,34 @@ INSERT INTO servico (id, nome, valor, ativo, usuario_id) VALUES
 
 
 -- =============================================================================
+-- 3.1 MATERIAIS E ESTOQUE
+-- =============================================================================
+INSERT INTO material (id, nome, quantidade, quantidade_inicial, ativo, alerta_estoque_baixo, usuario_id) VALUES
+(1, 'Luvas descartáveis (par)', 500, 500, 1, 0, 1),
+(2, 'Resina composta (seringa)', 80, 80, 1, 0, 1),
+(3, 'Anestésico local (tubete)', 120, 120, 1, 0, 1),
+(4, 'Broca diamantada', 200, 200, 1, 0, 1),
+(5, 'Algodão (pacote)', 60, 60, 1, 0, 1);
+
+INSERT INTO servico_material (id, id_servico, id_material, quantidade) VALUES
+(1, 1, 1, 1),
+(2, 1, 5, 1),
+(3, 2, 1, 1),
+(4, 2, 4, 2),
+(5, 2, 5, 2),
+(6, 3, 1, 1),
+(7, 3, 2, 1),
+(8, 3, 3, 1),
+(9, 3, 4, 1),
+(10, 4, 1, 1),
+(11, 4, 3, 2),
+(12, 4, 4, 2),
+(13, 8, 1, 1),
+(14, 8, 3, 2),
+(15, 8, 5, 1);
+
+
+-- =============================================================================
 -- 4. MOTIVOS DE CANCELAMENTO
 -- =============================================================================
 INSERT INTO motivo_cancelamento (id, descricao, usuario_criacao, data_criacao) VALUES
